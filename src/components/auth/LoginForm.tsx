@@ -1,6 +1,7 @@
 "use client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTransition } from "react";
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import * as z from "zod";
 import { LoginSchema } from "schemas";
@@ -20,6 +21,7 @@ import { FormError } from "@/components/FormError";
 import { FormSuccess } from "@/components/FormSuccess";
 
 export const LoginForm = () => {
+  const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -29,7 +31,9 @@ export const LoginForm = () => {
   });
 
   const onFormSubmit = (formValues: z.infer<typeof LoginSchema>) => {
-    console.log(formValues);
+    startTransition(() => {
+      console.log(formValues);
+    });
   };
 
   return (
@@ -49,7 +53,12 @@ export const LoginForm = () => {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Your email" type="email" />
+                    <Input
+                      {...field}
+                      placeholder="Your email"
+                      type="email"
+                      disabled={isPending}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -66,6 +75,7 @@ export const LoginForm = () => {
                       {...field}
                       placeholder="Your password "
                       type="password"
+                      disabled={isPending}
                     />
                   </FormControl>
                   <FormMessage />
@@ -75,7 +85,7 @@ export const LoginForm = () => {
           </div>
           <FormError message="" />
           <FormSuccess message="" />
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full" disabled={isPending}>
             Login
           </Button>
         </form>
