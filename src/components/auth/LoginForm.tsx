@@ -37,9 +37,9 @@ export const LoginForm = () => {
     setError("");
     setSuccess("");
     startTransition(() => {
-      void login(formValues).then((data) => {
-        setSuccess(data.success);
-        setError(data.error);
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      login(formValues).then((data) => {
+        setError(data?.error);
       });
     });
   };
